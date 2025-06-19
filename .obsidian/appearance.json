@@ -1,0 +1,9 @@
+{
+  "textFontFamily": "Charter",
+  "interfaceFontFamily": "Charter",
+  "enabledCssSnippets": [
+    "justify-text",
+    "callouts",
+    "wide-table"
+  ]
+}
