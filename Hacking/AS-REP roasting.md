@@ -281,8 +281,6 @@ image: https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/
 favicon: https://www.hackthebox.com/images/landingv3/favicon.png
 ```
 
-<br/>
-
 ```cardlink
 url: https://app.hackthebox.com/machines/Sauna
 title: "Sauna (Easy)"
@@ -291,8 +289,6 @@ host: app.hackthebox.com
 image: https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/f31d5d0264fadc267e7f38a9d7729d14.png
 favicon: https://www.hackthebox.com/images/landingv3/favicon.png
 ```
-
-<br/>
 
 ```cardlink
 url: https://app.hackthebox.com/machines/Blackfield
@@ -314,8 +310,6 @@ host: academy.hackthebox.com
 image: https://academy.hackthebox.com/storage/modules/176/logo.png
 favicon: https://www.hackthebox.com/images/landingv3/favicon.png
 ```
-
-<br/>
 
 ```cardlink
 url: https://academy.hackthebox.com/module/details/84
@@ -350,7 +344,7 @@ favicon: https://github.githubassets.com/favicons/favicon.svg
 image: https://opengraph.githubassets.com/f88befa328133f58dac08e935efac301ac1dbcb37fba7134bda99fe083485b00/Orange-Cyberdefense/GOAD
 ```
 
-<br/>
+
 
 ```cardlink
 url: https://github.com/safebuffer/vulnerable-AD
@@ -390,8 +384,6 @@ image: https://academy.hackthebox.com/storage/modules/176/logo.png
 favicon: https://www.hackthebox.com/images/landingv3/favicon.png
 ```
 
-<
-
 ```cardlink
 url: https://academy.hackthebox.com/module/details/233
 title: "Detecting Windows Attacks with Splunk (Tier II)"
@@ -400,8 +392,6 @@ host: academy.hackthebox.com
 image: https://academy.hackthebox.com/storage/modules/233/logo.png
 favicon: https://www.hackthebox.com/images/landingv3/favicon.png
 ```
-
-<br/>
 
 ```cardlink
 url: https://academy.hackthebox.com/module/details/306
