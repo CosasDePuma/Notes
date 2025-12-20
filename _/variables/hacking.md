@@ -2,8 +2,12 @@
 basedn: ${BASEDN}
 dn: ${DN}
 domain: ${DOMAIN}
-password: ${PASS}
-target: ${TARGET}
+iface: ${IFACE}
+lhost: ${LHOST}
+lport: ${LPORT}
+pass: ${PASS}
+rhosts: ${RHOSTS}
+rport: ${RPORT}
 user: ${USER}
 users: ${USERS}
 wordlist: ${WORDLIST}

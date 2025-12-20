@@ -6,8 +6,11 @@
     "emojiStyle": "native",
     "iconColor": null,
     "recentlyUsedIcons": [
-      "LiLockOpen",
-      "LiAxe"
+      "LiTestTube",
+      "LiTestTube2",
+      "LiDoorOpen",
+      "LiSignpost",
+      "LiTag"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -34,5 +37,10 @@
   "Hacking": {
     "iconName": "LiAxe",
     "iconColor": "#906f14"
-  }
+  },
+  "Hacking/Ports": "LiDoorOpen",
+  "Hacking/Ports/546,547(UDP) DHCPv6": "LiTag",
+  "Hacking/Ports/88(TCP) Kerberos": "LiDog",
+  "Hacking/Ports/53 (TCP,UDP) DNS": "LiSignpost",
+  "Hacking/Damn Vulnerable Labs": "LiTestTube2"
 }
