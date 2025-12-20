@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Hacking/Damn Vulnerable Labs/Damn Vulnerable Office.md",
-                "mode": "preview",
+                "file": "Hacking/Ports/80 (TCP) HTTP/HTMLi to XSS (Base Tag).md",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Damn Vulnerable Office"
+              "title": "HTMLi to XSS (Base Tag)"
             }
           }
         ]
@@ -183,14 +183,16 @@
       "callout-manager:Insert Callout": false
     }
   },
-  "active": "5afe285f35549534",
+  "active": "257a9f874479567d",
   "lastOpenFiles": [
+    "Hacking/Ports/80 (TCP) HTTP/HTMLi to XSS (Base Tag).md",
+    "Hacking/Ports/88(TCP) Kerberos/AS-REP Roasting.md",
+    "Hacking/Damn Vulnerable Labs/Damn Vulnerable Office.md",
+    "Hacking/Ports/80 (TCP) HTTP",
     "Hacking/Ports/53 (TCP,UDP) DNS/DNS Spoofing.md",
     "Hacking/Damn Vulnerable Labs",
     "Hacking/Ports",
     "Hacking/Ports/546,547(UDP) DHCPv6/DHCPv6 Spoofing.md",
-    "Hacking/Ports/88(TCP) Kerberos/AS-REP Roasting.md",
-    "Hacking/Damn Vulnerable Labs/Damn Vulnerable Office.md",
     "_/variables/hacking.md",
     "_/excalidraw/dns-spoofing.excalidraw.md",
     "_/excalidraw/dns.excalidraw.md",
@@ -212,7 +214,6 @@
     "_/variables/hacking",
     "_/variables",
     "_/excalidraw/Drawing 2025-12-19 00.36.43.excalidraw.md",
-    "_/excalidraw",
     "_/_/kerberos-preauth.excalidraw.md",
     "Excalidraw/Drawing 2025-12-19 00.04.49.excalidraw.md",
     "Excalidraw/Drawing 2025-12-19 00.04.46.excalidraw.md",

@@ -6,11 +6,11 @@
     "emojiStyle": "native",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "LiGlobe",
+      "LiWebhook",
+      "🕸",
       "LiTestTube",
-      "LiTestTube2",
-      "LiDoorOpen",
-      "LiSignpost",
-      "LiTag"
+      "LiTestTube2"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -42,5 +42,6 @@
   "Hacking/Ports/546,547(UDP) DHCPv6": "LiTag",
   "Hacking/Ports/88(TCP) Kerberos": "LiDog",
   "Hacking/Ports/53 (TCP,UDP) DNS": "LiSignpost",
-  "Hacking/Damn Vulnerable Labs": "LiTestTube2"
+  "Hacking/Damn Vulnerable Labs": "LiTestTube2",
+  "Hacking/Ports/80 (TCP) HTTP": "LiGlobe"
 }
