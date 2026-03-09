@@ -13,15 +13,70 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Hacking/Ports/80 (TCP) HTTP/HTMLi to XSS (Base Tag).md",
+                "file": "Hacking/Ports/53 (TCP,UDP) DNS/DNS Queries.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "HTMLi to XSS (Base Tag)"
+              "title": "DNS Queries"
+            }
+          },
+          {
+            "id": "035de14c9349d1a4",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.11.4"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.11.4"
+            }
+          },
+          {
+            "id": "029e057048022e6d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Hacking/Protocols/ICMP/ICMP Flooding.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ICMP Flooding"
+            }
+          },
+          {
+            "id": "647d63be20d99f29",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Hacking/Ports/546,547(UDP) DHCPv6/DHCPv6 Spoofing.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "DHCPv6 Spoofing"
+            }
+          },
+          {
+            "id": "59e8e02cdc3bfca5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Hacking/Protocols/ICMP/ICMP Flooding.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ICMP Flooding"
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -40,7 +95,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:#DNS",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -167,58 +222,55 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false,
       "obsidian-git:Open Git source control": false,
-      "obsidian-excalidraw-plugin:New drawing": false,
-      "callout-manager:Insert Callout": false
+      "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "257a9f874479567d",
+  "active": "59e8e02cdc3bfca5",
   "lastOpenFiles": [
+    "_/excalidraw/kerberos-preauth.excalidraw.md",
+    "_/excalidraw/kerberos-dontpreauth.excalidraw.md",
+    "_/excalidraw/dhcpv6-spoofing.excalidraw.md",
+    "Hacking/Protocols/ICMP/ICMP Smurf Attack.md",
+    " 1",
+    "Hacking/Protocols/ICMP/ICMP Flooding.md",
+    "Hacking/Ports/546,547(UDP) DHCPv6/DHCPv6 Spoofing.md",
+    "STUDY LIST.md",
+    "Hacking/Protocols/UDP",
+    "Hacking/Protocols/TCP",
+    "Hacking/Ports/53 (TCP,UDP) DNS/DNS Spoofing.md",
     "Hacking/Ports/80 (TCP) HTTP/HTMLi to XSS (Base Tag).md",
     "Hacking/Ports/88(TCP) Kerberos/AS-REP Roasting.md",
-    "Hacking/Damn Vulnerable Labs/Damn Vulnerable Office.md",
-    "Hacking/Ports/80 (TCP) HTTP",
-    "Hacking/Ports/53 (TCP,UDP) DNS/DNS Spoofing.md",
-    "Hacking/Damn Vulnerable Labs",
-    "Hacking/Ports",
-    "Hacking/Ports/546,547(UDP) DHCPv6/DHCPv6 Spoofing.md",
+    "_/excalidraw/icmp-smurf-attack.excalidraw.md",
+    "_/excalidraw/icmp-flooding.excalidraw.md",
     "_/variables/hacking.md",
+    "_/excalidraw/icmp.excalidraw.md",
     "_/excalidraw/dns-spoofing.excalidraw.md",
     "_/excalidraw/dns.excalidraw.md",
-    "_/excalidraw/dhcpv6-spoofing.excalidraw.md",
-    "_/excalidraw/kerberos-dontpreauth.excalidraw.md",
+    "Hacking/Ports/53 (TCP,UDP) DNS/DNS Queries.md",
+    "Hacking/Protocols/Untitled.md",
+    "Hacking/Protocols/ICMP",
+    "Hacking/Protocols",
+    "_/excalidraw/Drawing 2026-01-21 22.07.58.excalidraw.md",
+    "_/excalidraw/Drawing 2026-01-19 21.55.37.excalidraw.md",
+    "_/excalidraw/Drawing 2026-01-17 20.51.17.excalidraw.md",
+    "Hacking/Damn Vulnerable Labs/Damn Vulnerable Office.md",
+    "Hacking/Ports/80 (TCP) HTTP",
+    "Hacking/Damn Vulnerable Labs",
+    "Hacking/Ports",
     "_/excalidraw/dhcpv6.excalidraw.md",
-    "_/excalidraw/kerberos-preauth.excalidraw.md",
     "LLMNR.md",
     "Hacking/Ports/53 (TCP,UDP) DNS",
     "Hacking/Ports/546,547(UDP) DHCPv6",
-    "Hacking/Ports/88(TCP) Kerberos",
     "Untitled.canvas",
-    "Untitled.base",
-    "DC2022_10.0.20.1_2025-12-19_050952_bloodhound.zip",
-    "_/excalidraw/Drawing 2025-12-19 05.01.25.excalidraw.md",
-    "_/variables/hacking/target.md",
-    "_/variables/hacking/wordlist.md",
-    "_/variables/hacking/users.md",
-    "_/variables/hacking",
-    "_/variables",
-    "_/excalidraw/Drawing 2025-12-19 00.36.43.excalidraw.md",
-    "_/_/kerberos-preauth.excalidraw.md",
-    "Excalidraw/Drawing 2025-12-19 00.04.49.excalidraw.md",
-    "Excalidraw/Drawing 2025-12-19 00.04.46.excalidraw.md",
-    "Excalidraw/kerberos-preauth.excalidraw.md",
-    "Kerberos.md",
-    "Welcome.md"
+    "_/excalidraw/Drawing 2025-12-19 05.01.25.excalidraw.md"
   ]
 }

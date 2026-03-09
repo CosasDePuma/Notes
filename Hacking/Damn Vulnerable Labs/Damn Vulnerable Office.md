@@ -85,6 +85,99 @@ function Vuln-CreateAD {
 
 <#
 .SYNOPSIS
+Creates and links a GPO that enables RDP on all domain computers.
+
+.DESCRIPTION
+The Vuln-GPOEnableRDP function creates a GPO named "Enable RDP", configures the policy to allow Remote Desktop connections, and links it to the domain root so it applies to all computers. Requires the GroupPolicy module.
+
+.EXAMPLE
+Vuln-GPOEnableRDP
+#>
+function Vuln-GPOEnableRDP {
+    try {
+        Import-Module GroupPolicy -ErrorAction Stop
+        $domainDN = (Get-ADDomain -ErrorAction Stop).DistinguishedName
+        $gpoName = "Enable RDP"
+        $gpo = Get-GPO -Name $gpoName -ErrorAction SilentlyContinue
+        if (-not $gpo) {
+            $gpo = New-GPO -Name $gpoName | Out-Null
+            $gpo = Get-GPO -Name $gpoName
+            Write-Host "[+] GPO '$gpoName' created."
+        } else {
+            Write-Host "[!] GPO '$gpoName' already exists."
+        }
+        Set-GPRegistryValue -Name $gpoName -Key "HKLM\System\CurrentControlSet\Control\Terminal Server" -ValueName "fDenyTSConnections" -Type DWord -Value 0 | Out-Null
+        Set-GPRegistryValue -Name $gpoName -Key "HKLM\System\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile\GloballyOpenPorts\List" -ValueName "3389:TCP" -Type String -Value "3389:TCP:*:Enabled:Remote Desktop" | Out-Null
+        
+        $existingLink = Get-GPInheritance -Target $domainDN -ErrorAction SilentlyContinue | Select-Object -ExpandProperty GpoLinks | Where-Object { $_.DisplayName -eq $gpoName }
+        if (-not $existingLink) {
+            try {
+                New-GPLink -Name $gpoName -Target $domainDN -Enforced Yes -ErrorAction Stop | Out-Null
+                Write-Host "[+] GPO '$gpoName' linked to the domain and configured to enable RDP."
+            } catch {
+                if ($_.Exception.Message -like "*already linked*") {
+                    Write-Host "[!] GPO '$gpoName' is already linked to the domain."
+                } else {
+                    throw
+                }
+            }
+        } else {
+            Write-Host "[!] GPO '$gpoName' is already linked to the domain."
+        }
+    } catch {
+        throw "Error in Vuln-GPOEnableRDP: $_"
+    }
+}
+
+<#
+.SYNOPSIS
+Creates and links a GPO that disables Network Level Authentication (NLA) for RDP on all domain computers.
+
+.DESCRIPTION
+The Vuln-GPODisableNLA function creates a GPO named "Disable NLA for RDP", configures the policy to disable NLA for Remote Desktop, and links it to the domain root so it applies to all computers. Requires the GroupPolicy module.
+
+WARNING: This function creates a significant security vulnerability and should ONLY be used in isolated lab environments for educational purposes.
+
+.EXAMPLE
+Vuln-GPODisableNLA
+#>
+function Vuln-GPODisableNLA {
+    try {
+        Import-Module GroupPolicy -ErrorAction Stop
+        $domainDN = (Get-ADDomain -ErrorAction Stop).DistinguishedName
+        $gpoName = "Disable NLA for RDP"
+        $gpo = Get-GPO -Name $gpoName -ErrorAction SilentlyContinue
+        if (-not $gpo) {
+            $gpo = New-GPO -Name $gpoName | Out-Null
+            $gpo = Get-GPO -Name $gpoName
+            Write-Host "[+] GPO '$gpoName' created."
+        } else {
+            Write-Host "[!] GPO '$gpoName' already exists."
+        }
+        Set-GPRegistryValue -Name $gpoName -Key "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -ValueName "UserAuthentication" -Type DWord -Value 0 | Out-Null
+        
+        $existingLink = Get-GPInheritance -Target $domainDN -ErrorAction SilentlyContinue | Select-Object -ExpandProperty GpoLinks | Where-Object { $_.DisplayName -eq $gpoName }
+        if (-not $existingLink) {
+            try {
+                New-GPLink -Name $gpoName -Target $domainDN -Enforced Yes -ErrorAction Stop | Out-Null
+                Write-Host "[+] GPO '$gpoName' linked to the domain and configured to disable NLA for RDP."
+            } catch {
+                if ($_.Exception.Message -like "*already linked*") {
+                    Write-Host "[!] GPO '$gpoName' is already linked to the domain."
+                } else {
+                    throw
+                }
+            }
+        } else {
+            Write-Host "[!] GPO '$gpoName' is already linked to the domain."
+        }
+    } catch {
+        throw "Error in Vuln-GPODisableNLA: $_"
+    }
+}
+
+<#
+.SYNOPSIS
 Installs a lightweight IIS web service and configures an existing domain user
 as a Kerberos-enabled IIS service account.
 
@@ -177,6 +270,76 @@ function Vuln-InstallIIS {
 
     } catch {
         throw "Error in Vuln-InstallIIS: $_"
+    }
+}
+
+<#
+.SYNOPSIS
+Enables SMB null session enumeration by configuring anonymous access permissions.
+
+.DESCRIPTION
+The Vuln-SMBEnableNullSession function weakens security by enabling null session enumeration capabilities on the Domain Controller. This allows unauthenticated attackers to enumerate domain users, groups, and shares through SMB without credentials.
+
+This configuration modifies the following registry settings:
+- RestrictAnonymous: Set to 0 (allow anonymous enumeration)
+- RestrictAnonymousSAM: Set to 0 (allow SAM enumeration)
+- EveryoneIncludesAnonymous: Enabled (treat anonymous as Everyone)
+- LimitBlankPasswordUse: Disabled (allow blank password usage)
+
+Additionally, the Guest account is enabled to support legacy null session connections.
+
+WARNING: This function creates a significant security vulnerability and should ONLY be used in isolated lab environments for educational purposes.
+
+.EXAMPLE
+Vuln-SMBEnableNullSession
+#>
+function Vuln-SMBEnableNullSession {
+    try {
+        $regPaths = @(
+            @{
+                Path = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+                Name = "RestrictAnonymous"
+                Value = 0
+                Type = "DWord"
+            },
+            @{
+                Path = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+                Name = "RestrictAnonymousSAM"
+                Value = 0
+                Type = "DWord"
+            },
+            @{
+                Path = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+                Name = "EveryoneIncludesAnonymous"
+                Value = 1
+                Type = "DWord"
+            },
+            @{
+                Path = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+                Name = "LimitBlankPasswordUse"
+                Value = 0
+                Type = "DWord"
+            }
+        )
+
+        foreach ($reg in $regPaths) {
+            if (-not (Test-Path $reg.Path)) {
+                New-Item -Path $reg.Path -Force | Out-Null
+            }
+            Set-ItemProperty -Path $reg.Path -Name $reg.Name -Value $reg.Value -Type $reg.Type
+        }
+
+        Import-Module ActiveDirectory -ErrorAction Stop
+        $guestAccount = Get-ADUser -Filter "SamAccountName -eq 'Guest'" -ErrorAction SilentlyContinue
+        if ($guestAccount) {
+            Enable-ADAccount -Identity $guestAccount
+            Write-Host "[+] Guest account enabled."
+        }
+
+        Write-Host "[+] SMB null session enumeration enabled successfully. A reboot may be required for all changes to take effect."
+
+    } catch {
+        throw "Error in Vuln-SMBEnableNullSession: $_"
     }
 }
 
@@ -462,6 +625,8 @@ function Vuln-UserAsPass {
 	        Write-Host "[!] Fine-Grained Password Policy '$policyName' already exists."
         }
 
+        $assignedUsers = Get-ADFineGrainedPasswordPolicySubject -Identity $policyName -ErrorAction SilentlyContinue
+
 		$metadataUsers = Vuln-UsersMetadata
 		foreach ($assigned in $assignedUsers) {
 		    if ($assigned.SamAccountName -ne $User) {
@@ -578,7 +743,7 @@ be used in isolated lab environments for educational or testing purposes.
 Specifies the SamAccountName of the user to be configured for AS-REP Roasting.
 
 .EXAMPLE
-Vuln-ASREProast -User "standley.hudson"
+Vuln-ASREProast -User "stanley.hudson"
 #>
 function Vuln-ASREProast {
     [CmdletBinding()]
@@ -609,7 +774,6 @@ function Vuln-ASREProast {
             }
         }
 
-        # Obtener el usuario objetivo antes de usarlo
         $targetUser = Get-ADUser -Filter "SamAccountName -eq '$User'" -Properties UserAccountControl -ErrorAction Stop
         if (-not $targetUser) {
             throw "User '$User' not found in Active Directory."
@@ -667,12 +831,39 @@ function Vuln-Kerberoast {
     }
 }
 
+<#
+.SYNOPSIS
+Installs and configures a complete vulnerable Active Directory lab environment.
+
+.DESCRIPTION
+The Vuln-Install function automates the deployment of a vulnerable Active Directory domain designed for educational and penetration testing purposes. It performs the following operations in sequence:
+
+1. Creates a new Active Directory domain (theoffice.local)
+2. Populates the domain with user accounts
+3. Promotes a standard user to Domain Admin
+4. Configures Group Policy Objects to enable RDP and disable NLA
+5. Enables SMB null session enumeration
+6. Introduces multiple security vulnerabilities including:
+   - Username-as-password authentication
+   - Passwords stored in AD descriptions
+   - Password spraying scenario
+   - AS-REP Roasting vulnerability
+   - Kerberoasting via IIS service account
+
+WARNING: This function creates multiple severe security vulnerabilities and must ONLY be used in isolated lab environments for educational purposes. Never run this in a production environment.
+
+.EXAMPLE
+Vuln-Install
+#>
 function Vuln-Install {
 	Vuln-CreateAD -Domain "theoffice.local"
 	Vuln-AddUsers
 	Vuln-ChangeAdmin -User "michael.scott"
 	
-	# Vulnerabilities
+	Vuln-GPOEnableRDP
+	Vuln-GPODisableNLA
+	Vuln-SMBEnableNullSession
+
 	Vuln-UserAsPass -User "phyllis.lapin-vance"
 	Vuln-PasswordInDescription -User "kelly.kapoor"
 	Vuln-PasswordSpraying -Users "jim.halpert,pam.beesly" -Password "DunderMifflin1!"

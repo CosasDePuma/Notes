@@ -6,11 +6,11 @@
     "emojiStyle": "native",
     "iconColor": null,
     "recentlyUsedIcons": [
-      "LiGlobe",
-      "LiWebhook",
-      "🕸",
-      "LiTestTube",
-      "LiTestTube2"
+      "LiMessageCircleQuestion",
+      "LiHandshake",
+      "LiNetwork",
+      "LiSpeech",
+      "LiGlobe"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -43,5 +43,9 @@
   "Hacking/Ports/88(TCP) Kerberos": "LiDog",
   "Hacking/Ports/53 (TCP,UDP) DNS": "LiSignpost",
   "Hacking/Damn Vulnerable Labs": "LiTestTube2",
-  "Hacking/Ports/80 (TCP) HTTP": "LiGlobe"
+  "Hacking/Ports/80 (TCP) HTTP": "LiGlobe",
+  "Hacking/Protocols/ICMP": "LiSpeech",
+  "Hacking/Protocols": "LiNetwork",
+  "Hacking/Protocols/TCP": "LiHandshake",
+  "Hacking/Protocols/UDP": "LiMessageCircleQuestion"
 }

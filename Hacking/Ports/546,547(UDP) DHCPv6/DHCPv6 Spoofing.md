@@ -50,7 +50,7 @@ mitm6 -i ${IFACE} -d ${DOMAIN}
 
 ~~~
 
-### Cadenas de ataque
+## Ataques relacionados
 
 -   [[DHCPv6 Spoofing]] → [[DNS Spoofing]] → Kerberos relay
 

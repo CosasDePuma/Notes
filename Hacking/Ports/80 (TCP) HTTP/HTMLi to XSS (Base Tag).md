@@ -46,7 +46,7 @@ Por último, se inyecta mediante [[HTML Injection (HTMLi)]] en el sitio web vuln
 <base href=//evil.example.com>
 ```
 
->[!warning] `<base>` extrae únicamente el **origen** (protocolo:dominio:puerto) del `href`, ignorando el resto de la URL.
+>[!warning] `<base>` extrae únicamente el **origen** (protocolo://dominio:puerto) del `href`, ignorando el resto de la URL.
 >Es recomendable usar [Beeceptor](https://beeceptor.com/), ya que funciona mediante subdominios y permite controlar el contenido de las respuestas mediante reglas personalizables.
 
 [^1]: Las URL relativas son aquellas que se resuelve en relación con la URL de la página actual.
